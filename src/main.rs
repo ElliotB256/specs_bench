@@ -3,7 +3,11 @@ use nalgebra::Vector3;
 use rand::distributions::{Distribution, Normal};
 use specs::{Builder, World, VecStorage, System, Component, DispatcherBuilder, ReadStorage, WriteStorage};
 
-pub struct ComponentA(Vector3<f64>);
+pub struct ComponentA {
+    x: f64,
+    y: f64,
+    z: f64
+}
 impl Component for ComponentA {
     type Storage = VecStorage<Self>;
 }
@@ -36,7 +40,7 @@ impl<'a> System<'a> for SimpleSystem {
         use specs::ParJoin;
 
         (&a, &b, &mut c).par_join().for_each(|(a,b,mut c)| {
-            c.value = a.0.x * b.value + a.0.y;    
+            c.value = a.x * b.value + a.y;    
         });
     }
 }
@@ -65,9 +69,9 @@ fn main() {
         world
             .create_entity()
             .with(ComponentA {
-                0:
-                Vector3::new(1.0, 0.0, 
-                    dist.sample(&mut rng))
+                x: 1.0,
+                y: 0.0,
+                z: dist.sample(&mut rng)
             })
             .with(ComponentB {
                 value:
